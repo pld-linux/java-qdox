@@ -1,22 +1,23 @@
 %define section free
 
 Summary:	Extract class/interface/method definitions from sources
+Summary(pl):	Wyci±ganie definicji klas/interfejsów/metod ze ¼róde³
 Name:		qdox
 Version:	1.5
-Release:	1jpp
+Release:	2
 Epoch:		0
 License:	Apache-style Software License
 Group:		Development/Languages/Java
-URL:		http://qdox.codehaus.org/
-Source0:	%{name}-%{version}-src.tar.gz
 # cvs -d:pserver:anonymous@cvs.qdox.codehaus.org:/home/projects/qdox/scm login
 # cvs -z3 -d:pserver:anonymous@cvs.qdox.codehaus.org:/home/projects/qdox/scm export -r QDOX_1_5 qdox
+Source0:	%{name}-%{version}-src.tar.gz
 Source1:	pom-maven2jpp-depcat.xsl
 Source2:	pom-maven2jpp-newdepmap.xsl
 Source3:	pom-maven2jpp-mapdeps.xsl
 Source4:	%{name}-%{version}-jpp-depmap.xml
 Source5:	%{name}-LocatedDef.java
 Patch0:		%{name}-1.5-parser_y.patch
+URL:		http://qdox.codehaus.org/
 BuildRequires:	byaccj
 BuildRequires:	jakarta-ant >= 1.6
 BuildRequires:	jflex
@@ -35,12 +36,22 @@ class/interface/method definitions from source files complete with
 JavaDoc @tags. It is designed to be used by active code generators or
 documentation tools.
 
+%description -l pl
+QDox to bardzo szybki i o niewielkim narzucie analizator do wyci±gania
+definicji klas/interfejsów/metod z plików ¼ród³owych uzupe³nionych
+znacznikami @ JavaDoc. Jest zaprojektowany do u¿ywania z aktywnymi
+generatorami kodu i narzêdziami do tworzenia dokumentacji.
+
 %package javadoc
 Summary:	Javadoc for %{name}
+Summary(pl):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 
 %description javadoc
-%{summary}
+Javadoc for %{name}.
+
+%description javadoc -l pl
+Dokumentacja javadoc dla pakietu %{name}.
 
 %prep
 %setup -q -n %{name}
