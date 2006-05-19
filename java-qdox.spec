@@ -19,7 +19,7 @@ Source5:	%{name}-LocatedDef.java
 Patch0:		%{name}-1.5-parser_y.patch
 URL:		http://qdox.codehaus.org/
 BuildRequires:	byaccj
-BuildRequires:	jakarta-ant >= 1.6
+BuildRequires:	ant >= 1.6
 BuildRequires:	jflex
 BuildRequires:	jmock >= 1.0
 #BuildRequires:	jpackage-utils >= 1.6
