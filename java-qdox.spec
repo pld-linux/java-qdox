@@ -18,14 +18,14 @@ Source4:	%{name}-%{version}-jpp-depmap.xml
 Source5:	%{name}-LocatedDef.java
 Patch0:		%{name}-1.5-parser_y.patch
 URL:		http://qdox.codehaus.org/
-BuildRequires:	byaccj
 BuildRequires:	ant >= 1.6
+BuildRequires:	byaccj
 BuildRequires:	jflex
 BuildRequires:	jmock >= 1.0
-#BuildRequires:	jpackage-utils >= 1.6
 BuildRequires:	junit >= 3.8.1
 BuildRequires:	maven
 BuildRequires:	mockobjects >= 0.09
+#BuildRequires:	rpm-javaprov
 BuildRequires:	saxon
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
