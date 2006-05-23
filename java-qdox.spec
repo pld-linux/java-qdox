@@ -25,7 +25,6 @@ BuildRequires:	jmock >= 1.0
 BuildRequires:	junit >= 3.8.1
 BuildRequires:	maven
 BuildRequires:	mockobjects >= 0.09
-#BuildRequires:	rpm-javaprov
 BuildRequires:	saxon
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
