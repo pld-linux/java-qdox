@@ -1,7 +1,7 @@
 %define section free
 
 Summary:	Extract class/interface/method definitions from sources
-Summary(pl):	Wyci±ganie definicji klas/interfejsów/metod ze ¼róde³
+Summary(pl.UTF-8):   WyciÄ…ganie definicji klas/interfejsÃ³w/metod ze ÅºrÃ³deÅ‚
 Name:		qdox
 Version:	1.5
 Release:	2
@@ -35,21 +35,21 @@ class/interface/method definitions from source files complete with
 JavaDoc @tags. It is designed to be used by active code generators or
 documentation tools.
 
-%description -l pl
-QDox to bardzo szybki i o niewielkim narzucie analizator do wyci±gania
-definicji klas/interfejsów/metod z plików ¼ród³owych uzupe³nionych
-znacznikami @ JavaDoc. Jest zaprojektowany do u¿ywania z aktywnymi
-generatorami kodu i narzêdziami do tworzenia dokumentacji.
+%description -l pl.UTF-8
+QDox to bardzo szybki i o niewielkim narzucie analizator do wyciÄ…gania
+definicji klas/interfejsÃ³w/metod z plikÃ³w ÅºrÃ³dÅ‚owych uzupeÅ‚nionych
+znacznikami @ JavaDoc. Jest zaprojektowany do uÅ¼ywania z aktywnymi
+generatorami kodu i narzÄ™dziami do tworzenia dokumentacji.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl):	Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 
 %description javadoc
 Javadoc for %{name}.
 
-%description javadoc -l pl
+%description javadoc -l pl.UTF-8
 Dokumentacja javadoc dla pakietu %{name}.
 
 %prep
