@@ -1,7 +1,7 @@
 %define section free
 
 Summary:	Extract class/interface/method definitions from sources
-Summary(pl.UTF-8):   Wyciąganie definicji klas/interfejsów/metod ze źródeł
+Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		qdox
 Version:	1.5
 Release:	2
@@ -43,7 +43,7 @@ generatorami kodu i narzędziami do tworzenia dokumentacji.
 
 %package javadoc
 Summary:	Javadoc for %{name}
-Summary(pl.UTF-8):   Dokumentacja javadoc dla pakietu %{name}
+Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 
 %description javadoc
