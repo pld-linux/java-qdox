@@ -1,3 +1,6 @@
+#
+# TODO: 1.6.x from http://repository.codehaus.org/com/thoughtworks/qdox/qdox/
+#
 # Conditional build:
 %bcond_with	maven		# use maven or straight ant for build
 #
