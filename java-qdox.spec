@@ -1,3 +1,6 @@
+# Conditional build:
+%bcond_with	maven		# use maven or straight ant for build
+#
 %include	/usr/lib/rpm/macros.java
 Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
@@ -7,27 +10,32 @@ Release:	2
 Epoch:		0
 License:	Apache-style Software License
 Group:		Development/Languages/Java
-# cvs -d:pserver:anonymous@cvs.qdox.codehaus.org:/home/projects/qdox/scm login
-# cvs -z3 -d:pserver:anonymous@cvs.qdox.codehaus.org:/home/projects/qdox/scm export -r QDOX_1_5 qdox
-Source0:	%{name}-%{version}-src.tar.gz
-Source1:	pom-maven2jpp-depcat.xsl
-Source2:	pom-maven2jpp-newdepmap.xsl
-Source3:	pom-maven2jpp-mapdeps.xsl
-Source4:	%{name}-%{version}-jpp-depmap.xml
+Source0:	http://repo1.maven.org/maven2/qdox/qdox/1.5/%{name}-%{version}-src.tar.gz
+# Source0-md5:	501f05c8ac26efe5e0b64e51e894f788
+#Source1:	pom-maven2jpp-depcat.xsl
+#Source2:	pom-maven2jpp-newdepmap.xsl
+#Source3:	pom-maven2jpp-mapdeps.xsl
+#Source4:	%{name}-%{version}-jpp-depmap.xml
 Source5:	%{name}-LocatedDef.java
-Patch0:		%{name}-1.5-parser_y.patch
+Source6:	%{name}-build.xml
+Patch0:		%{name}-project_xml.patch
+Patch1:		%{name}-parser_y.patch
 URL:		http://qdox.codehaus.org/
 BuildRequires:	ant >= 1.6
+BuildRequires:	ant-junit
 BuildRequires:	byaccj
 BuildRequires:	jflex
-BuildRequires:	jmock >= 1.0
 BuildRequires:	jpackage-utils
 BuildRequires:	junit >= 3.8.1
-BuildRequires:	maven
-BuildRequires:	mockobjects >= 0.09
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
+BuildRequires:	sed >= 4.0
+%if %{with maven}
+BuildRequires:	jmock >= 0:1.0
+BuildRequires:	maven >= 0:1.1
+BuildRequires:	mockobjects >= 0:0.09
 BuildRequires:	saxon
+%endif
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -56,11 +64,16 @@ Javadoc for %{name}.
 Dokumentacja javadoc dla pakietu %{name}.
 
 %prep
-%setup -q -n %{name}
+%setup -q
+find '(' -name '*.xml' -o -name '*.java' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 cp %{SOURCE5} src/java/com/thoughtworks/qdox/parser/structs/LocatedDef.java
-%patch0
+cp %{SOURCE6} build.xml
+
+%patch0 -p0
+%patch1 -p0
 
 %build
+%if %{with maven}
 export DEPCAT=$(pwd)/qdox-1.5-depcat.new.xml
 echo '<?xml version="1.0" standalone="yes"?>' > $DEPCAT
 echo '<depset>' >> $DEPCAT
@@ -79,29 +92,38 @@ for p in $(find . -name project.xml); do
 	cd -
 done
 
-for p in $(find . -name project.properties); do
-	echo >> $p
-echo maven.repo.remote=file:%{_datadir}/maven-1.0/repository >> $p
-	echo maven.home.local=$(pwd)/.maven >> $p
-done
+export MAVEN_HOME_LOCAL=$(pwd)/.maven
 
-mkdir -p .maven/repository/maven/jars
-build-jar-repository .maven/repository/maven/jars maven-jelly-tags
-
-mkdir -p .maven/repository/JPP/jars
-build-jar-repository -s -p .maven/repository/JPP/jars \
-%ant \
-jmock \
-junit \
-
-rm -rf bootstrap/*
-build-jar-repository -s -p bootstrap jflex
-maven -Dqdox.byaccj.executable=byaccj \
+maven \
+-Dmaven.repo.remote=file:%{_datadir}/maven/repository \
+	-Dmaven.home.local=$MAVEN_HOME_LOCAL \
+	-Dqdox.byaccj.executable=byaccj \
 	jar javadoc
+%else
+
+mkdir -p target/src/java/com/thoughtworks/qdox/parser/impl
+export CLASSPATH=$(build-classpath jflex)
+
+java JFlex.Main \
+	-d target/src/java/com/thoughtworks/qdox/parser/impl \
+	src/grammar/lexer.flex
+
+cd target
+byaccj \
+	-Jnorun \
+	-Jnoconstruct \
+	-Jclass=Parser \
+	-Jsemantic=Value \
+	-Jpackage=com.thoughtworks.qdox.parser.impl \
+	../src/grammar/parser.y
+cd -
+
+mv target/Parser.java target/src/java/com/thoughtworks/qdox/parser/impl
+%ant -Dbuild.sysclasspath=only jar javadoc
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 # jars
 install -d $RPM_BUILD_ROOT%{_javadir}
 cp -a target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
@@ -109,7 +131,7 @@ ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 # javadoc
 install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr target/docs/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
+cp -a target/docs/apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 
 %clean
