@@ -6,7 +6,7 @@ Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		qdox
 Version:	1.5
-Release:	2
+Release:	3
 Epoch:		0
 License:	Apache-style Software License
 Group:		Development/Languages/Java
@@ -20,6 +20,7 @@ Source5:	%{name}-LocatedDef.java
 Source6:	%{name}-build.xml
 Patch0:		%{name}-project_xml.patch
 Patch1:		%{name}-parser_y.patch
+Patch2:		%{name}-yy_lexical_state.patch
 URL:		http://qdox.codehaus.org/
 BuildRequires:	ant >= 1.6
 BuildRequires:	ant-junit
@@ -65,12 +66,12 @@ Dokumentacja javadoc dla pakietu %{name}.
 
 %prep
 %setup -q
-find '(' -name '*.xml' -o -name '*.java' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
+find '(' -name '*.xml' -o -name '*.java' -o -name '*.flex' ')' -print0 | xargs -0 sed -i -e 's,\r$,,'
 cp %{SOURCE5} src/java/com/thoughtworks/qdox/parser/structs/LocatedDef.java
 cp %{SOURCE6} build.xml
-
 %patch0 -p0
 %patch1 -p0
+%patch2 -p1
 
 %build
 %if %{with maven}
@@ -104,7 +105,7 @@ maven \
 mkdir -p target/src/java/com/thoughtworks/qdox/parser/impl
 export CLASSPATH=$(build-classpath jflex)
 
-java JFlex.Main \
+%java JFlex.Main \
 	-d target/src/java/com/thoughtworks/qdox/parser/impl \
 	src/grammar/lexer.flex
 
@@ -119,7 +120,9 @@ byaccj \
 cd -
 
 mv target/Parser.java target/src/java/com/thoughtworks/qdox/parser/impl
-%ant -Dbuild.sysclasspath=only jar javadoc
+%ant jar javadoc \
+	-Dnoget=1 \
+	-Dbuild.sysclasspath=only
 %endif
 
 %install
