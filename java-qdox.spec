@@ -1,5 +1,4 @@
-%define section free
-
+%include	/usr/lib/rpm/macros.java
 Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		qdox
@@ -22,9 +21,12 @@ BuildRequires:	ant >= 1.6
 BuildRequires:	byaccj
 BuildRequires:	jflex
 BuildRequires:	jmock >= 1.0
+BuildRequires:	jpackage-utils
 BuildRequires:	junit >= 3.8.1
 BuildRequires:	maven
 BuildRequires:	mockobjects >= 0.09
+BuildRequires:	rpm-javaprov
+BuildRequires:	rpmbuild(macros) >= 1.300
 BuildRequires:	saxon
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -45,6 +47,7 @@ generatorami kodu i narzędziami do tworzenia dokumentacji.
 Summary:	Javadoc for %{name}
 Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
+Requires:	jpackage-utils
 
 %description javadoc
 Javadoc for %{name}.
@@ -87,7 +90,7 @@ build-jar-repository .maven/repository/maven/jars maven-jelly-tags
 
 mkdir -p .maven/repository/JPP/jars
 build-jar-repository -s -p .maven/repository/JPP/jars \
-ant \
+%ant \
 jmock \
 junit \
 
@@ -101,9 +104,8 @@ rm -rf $RPM_BUILD_ROOT
 
 # jars
 install -d $RPM_BUILD_ROOT%{_javadir}
-cp -p target/%{name}-%{version}.jar \
-      $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed "s|-%{version}||g"`; done)
+cp -a target/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
+ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
 
 # javadoc
 install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -114,20 +116,14 @@ ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
 rm -rf $RPM_BUILD_ROOT
 
 %post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-	rm -f %{_javadocdir}/%{name}
-fi
+ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 
 %files
 %defattr(644,root,root,755)
 %doc LICENSE.txt
-%{_javadir}/%{name}.jar
-%{_javadir}/%{name}-%{version}.jar
+%{_javadir}/*.jar
 
 %files javadoc
 %defattr(644,root,root,755)
-%doc %{_javadocdir}/*
+%{_javadocdir}/%{name}-%{version}
+%ghost %{_javadocdir}/%{name}
