@@ -11,7 +11,7 @@ Name:		qdox
 Version:	1.5
 Release:	3
 Epoch:		0
-License:	Apache-style Software License
+License:	Apache-like
 Group:		Development/Languages/Java
 Source0:	http://repo1.maven.org/maven2/qdox/qdox/1.5/%{name}-%{version}-src.tar.gz
 # Source0-md5:	501f05c8ac26efe5e0b64e51e894f788
