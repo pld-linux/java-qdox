@@ -46,17 +46,13 @@ Dokumentacja javadoc dla pakietu %{name}.
 %prep
 %setup -qc
 
-mkdir build
-mkdir apidoc
-
 %build
 
 CLASSPATH=$(build-classpath junit ant)
-export CLASSPATH
 export SHELL=/bin/sh
 
-%javac -source 1.4 -target 1.4 -d build $(find -name '*.java')
-%javadoc -d apidocs $(find -name '*.java')
+%javac -classpath $CLASSPATH -source 1.4 -target 1.4 -d build $(find -name '*.java')
+%javadoc -all -d apidocs
 %jar -cf %{name}-%{version}.jar -C build com
 
 %install
