@@ -1,0 +1,2 @@
+- do not create dirs in %prep
+- fixed %build
