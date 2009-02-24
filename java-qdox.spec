@@ -7,13 +7,13 @@ Version:	1.8
 Release:	0.1
 License:	Apache v2.0
 Group:		Development/Languages/Java
-Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/1.8/qdox-1.8-sources.jar
+Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{name}-%{version}-sources.jar
 # Source0-md5:	9cbc745194a39ec27f54bbe16c2342cc
 URL:		http://qdox.codehaus.org/
 BuildRequires:	ant
 BuildRequires:	java-gcj-compat-devel
-BuildRequires:	junit
 BuildRequires:	jpackage-utils
+BuildRequires:	junit
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
 BuildArch:	noarch
@@ -51,7 +51,13 @@ Dokumentacja javadoc dla pakietu %{name}.
 CLASSPATH=$(build-classpath junit ant)
 export SHELL=/bin/sh
 
-%javac -classpath $CLASSPATH -source 1.4 -target 1.4 -d build $(find -name '*.java')
+%javac \
+	-classpath $CLASSPATH \
+	-source 1.4 \
+	-target 1.4 \
+	-d build \
+	$(find -name '*.java')
+
 %javadoc -all -d apidocs
 %jar -cf %{name}-%{version}.jar -C build com
 
