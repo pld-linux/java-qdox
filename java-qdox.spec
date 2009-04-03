@@ -1,3 +1,6 @@
+# TODO:
+# - execute tests
+
 %bcond_without	javadoc		# build javadoc
 %if "%{pld_release}" == "ti"
 %bcond_without	java_sun		# build with gcj
@@ -12,7 +15,7 @@ Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		java-qdox
 Version:	1.8
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Libraries/Java
 Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{srcname}-%{version}-sources.jar
@@ -20,11 +23,12 @@ Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{
 URL:		http://qdox.codehaus.org/
 BuildRequires:	ant
 %{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
-%{?with_java_sun:BuildRequires:	java-sun <= 1.5}
+%{?with_java_sun:BuildRequires:	java-sun}
 BuildRequires:	jpackage-utils
 BuildRequires:	junit
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
+Obsoletes:	qdox
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -45,6 +49,7 @@ Summary:	Javadoc for %{name}
 Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
 Group:		Documentation
 Requires:	jpackage-utils
+Obsoletes:	qdox-javadoc
 
 %description javadoc
 Javadoc for %{name}.
