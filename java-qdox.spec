@@ -1,5 +1,6 @@
 # TODO:
 # - execute tests
+# - fix javadoc with java-sun
 
 %bcond_without	javadoc		# build javadoc
 %if "%{pld_release}" == "ti"
