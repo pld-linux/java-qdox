@@ -26,6 +26,7 @@ BuildRequires:	ant
 %{?with_java_sun:BuildRequires:	java-sun}
 BuildRequires:	jpackage-utils
 BuildRequires:	junit
+BuildRequires:  rpm >= 4.4.9-56
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
 Obsoletes:	qdox
@@ -63,6 +64,8 @@ Dokumentacja javadoc dla pakietu %{name}.
 %build
 
 CLASSPATH=$(build-classpath junit ant)
+
+install -d build
 
 %javac \
 	-classpath $CLASSPATH \
