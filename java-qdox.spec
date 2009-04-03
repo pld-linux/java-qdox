@@ -1,17 +1,26 @@
-#
+%bcond_without	javadoc		# build javadoc
+%if "%{pld_release}" == "ti"
+%bcond_without	java_sun		# build with gcj
+%else
+%bcond_with	java_sun		# build with java-sun
+%endif
+
 %include	/usr/lib/rpm/macros.java
+
+%define		srcname	qdox
 Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
-Name:		qdox
+Name:		java-qdox
 Version:	1.8
-Release:	0.1
+Release:	1
 License:	Apache v2.0
-Group:		Development/Languages/Java
-Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{name}-%{version}-sources.jar
+Group:		Libraries/Java
+Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{srcname}-%{version}-sources.jar
 # Source0-md5:	9cbc745194a39ec27f54bbe16c2342cc
 URL:		http://qdox.codehaus.org/
 BuildRequires:	ant
-BuildRequires:	java-gcj-compat-devel
+%{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
+%{?with_java_sun:BuildRequires:	java-sun <= 1.5}
 BuildRequires:	jpackage-utils
 BuildRequires:	junit
 BuildRequires:	rpm-javaprov
@@ -49,7 +58,6 @@ Dokumentacja javadoc dla pakietu %{name}.
 %build
 
 CLASSPATH=$(build-classpath junit ant)
-export SHELL=/bin/sh
 
 %javac \
 	-classpath $CLASSPATH \
@@ -58,27 +66,29 @@ export SHELL=/bin/sh
 	-d build \
 	$(find -name '*.java')
 
-%javadoc -all -d apidocs
-%jar -cf %{name}-%{version}.jar -C build com
+%{?with_javadoc:%javadoc -all -d apidocs}
+%jar -cf %{srcname}-%{version}.jar -C build com
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 # jars
 install -d $RPM_BUILD_ROOT%{_javadir}
-cp -a %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-ln -s %{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}.jar
+cp -a %{srcname}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}-%{version}.jar
+ln -s %{srcname}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{srcname}.jar
 
+%if %{with javadoc}
 # javadoc
-install -d $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -a apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name} # ghost symlink
+install -d $RPM_BUILD_ROOT%{_javadocdir}/%{srcname}-%{version}
+cp -a apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{srcname}-%{version}
+ln -s %{srcname}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{srcname} # ghost symlink
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post javadoc
-ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
+ln -nfs %{srcname}-%{version} %{_javadocdir}/%{srcname}
 
 %files
 %defattr(644,root,root,755)
@@ -86,5 +96,5 @@ ln -nfs %{name}-%{version} %{_javadocdir}/%{name}
 
 %files javadoc
 %defattr(644,root,root,755)
-%{_javadocdir}/%{name}-%{version}
-%ghost %{_javadocdir}/%{name}
+%{_javadocdir}/%{srcname}-%{version}
+%ghost %{_javadocdir}/%{srcname}
