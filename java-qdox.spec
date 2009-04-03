@@ -1,6 +1,5 @@
 # TODO:
 # - execute tests
-# - fix javadoc with java-sun
 
 %bcond_without	javadoc		# build javadoc
 %if "%{pld_release}" == "ti"
@@ -16,7 +15,7 @@ Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		java-qdox
 Version:	1.8
-Release:	2
+Release:	3
 License:	Apache v2.0
 Group:		Libraries/Java
 Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{srcname}-%{version}-sources.jar
@@ -47,17 +46,17 @@ znacznikami @ JavaDoc. Jest zaprojektowany do używania z aktywnymi
 generatorami kodu i narzędziami do tworzenia dokumentacji.
 
 %package javadoc
-Summary:	Javadoc for %{name}
-Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{name}
+Summary:	Javadoc for %{srcname}
+Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{srcname}
 Group:		Documentation
 Requires:	jpackage-utils
 Obsoletes:	qdox-javadoc
 
 %description javadoc
-Javadoc for %{name}.
+Javadoc for %{srcname}.
 
 %description javadoc -l pl.UTF-8
-Dokumentacja javadoc dla pakietu %{name}.
+Dokumentacja javadoc dla pakietu %{srcname}.
 
 %prep
 %setup -qc
@@ -75,7 +74,12 @@ install -d build
 	-d build \
 	$(find -name '*.java')
 
-%{?with_javadoc:%javadoc -all -d apidocs}
+%if %{with javadoc}
+%javadoc -d apidocs \
+	%{?with_java_sun:com.thoughtworks.qdox} \
+	$(find com/thoughtworks/qdox -name '*.java')
+%endif
+
 %jar -cf %{srcname}-%{version}.jar -C build com
 
 %install
