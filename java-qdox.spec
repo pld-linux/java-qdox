@@ -27,7 +27,7 @@ BuildRequires:	ant
 %{?with_java_sun:BuildRequires:	java-sun}
 BuildRequires:	jpackage-utils
 BuildRequires:	junit
-BuildRequires:  rpm >= 4.4.9-56
+BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
 Obsoletes:	qdox
