@@ -1,5 +1,5 @@
 # TODO:
-# - execute tests
+# - tests
 
 %bcond_without	javadoc		# build javadoc
 %if "%{pld_release}" == "ti"
@@ -25,7 +25,6 @@ BuildRequires:	ant
 %{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
 %{?with_java_sun:BuildRequires:	java-sun}
 BuildRequires:	jpackage-utils
-BuildRequires:	junit
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-javaprov
 BuildRequires:	rpmbuild(macros) >= 1.300
@@ -63,7 +62,7 @@ Dokumentacja javadoc dla pakietu %{srcname}.
 
 %build
 
-CLASSPATH=$(build-classpath junit ant)
+CLASSPATH=$(build-classpath ant)
 
 install -d build
 
@@ -72,12 +71,12 @@ install -d build
 	-source 1.4 \
 	-target 1.4 \
 	-d build \
-	$(find -name '*.java')
+	$(find -name '*.java' | grep -v com/thoughtworks/qdox/junit)
 
 %if %{with javadoc}
 %javadoc -d apidocs \
 	%{?with_java_sun:com.thoughtworks.qdox} \
-	$(find com/thoughtworks/qdox -name '*.java')
+	$(find -name '*.java' | grep -v ^com/thoughtworks/qdox/junit)
 %endif
 
 %jar -cf %{srcname}-%{version}.jar -C build com
