@@ -1,12 +1,7 @@
 # TODO:
 # - tests
 
-%bcond_without	javadoc		# build javadoc
-%if "%{pld_release}" == "ti"
-%bcond_without	java_sun		# build with gcj
-%else
-%bcond_with	java_sun		# build with java-sun
-%endif
+%bcond_without	javadoc	# don't build apidocs
 
 %include	/usr/lib/rpm/macros.java
 
@@ -14,20 +9,20 @@
 Summary:	Extract class/interface/method definitions from sources
 Summary(pl.UTF-8):	Wyciąganie definicji klas/interfejsów/metod ze źródeł
 Name:		java-qdox
-Version:	1.8
-Release:	3
+Version:	1.11
+Release:	1
 License:	Apache v2.0
 Group:		Libraries/Java
 Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{srcname}-%{version}-sources.jar
-# Source0-md5:	9cbc745194a39ec27f54bbe16c2342cc
+# Source0-md5:	acb16e9037242322155631a32dba8661
 URL:		http://qdox.codehaus.org/
+# It don't use ant as build system, but it links with ant
 BuildRequires:	ant
-%{!?with_java_sun:BuildRequires:	java-gcj-compat-devel}
-%{?with_java_sun:BuildRequires:	java-sun}
+BuildRequires:	jdk
 BuildRequires:	jpackage-utils
-BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-javaprov
-BuildRequires:	rpmbuild(macros) >= 1.300
+BuildRequires:	rpmbuild(macros) >= 1.555
+BuildConflicts:	java-gcj-compat-devel
 Obsoletes:	qdox
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -57,6 +52,17 @@ Javadoc for %{srcname}.
 %description javadoc -l pl.UTF-8
 Dokumentacja javadoc dla pakietu %{srcname}.
 
+%package source
+Summary:	Source code of %{srcname}
+Summary(pl.UTF-8):	Kod źródłowy %{srcname}
+Group:		Documentation
+
+%description source
+Source code %{srcname}.
+
+%description source -l pl.UTF-8
+Kod źródłowy %{srcname}.
+
 %prep
 %setup -qc
 
@@ -67,7 +73,7 @@ CLASSPATH=$(build-classpath ant)
 install -d build
 
 %javac \
-	-classpath $CLASSPATH \
+	-classpath "$CLASSPATH" \
 	-source 1.4 \
 	-target 1.4 \
 	-d build \
@@ -75,7 +81,6 @@ install -d build
 
 %if %{with javadoc}
 %javadoc -d apidocs \
-	%{?with_java_sun:com.thoughtworks.qdox} \
 	$(find -name '*.java' | grep -v ^com/thoughtworks/qdox/junit)
 %endif
 
@@ -96,6 +101,10 @@ cp -a apidocs/* $RPM_BUILD_ROOT%{_javadocdir}/%{srcname}-%{version}
 ln -s %{srcname}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{srcname} # ghost symlink
 %endif
 
+# source
+install -d $RPM_BUILD_ROOT%{_javasrcdir}
+install %{SOURCE0} $RPM_BUILD_ROOT%{_javasrcdir}/%{srcname}.src.jar
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -110,3 +119,7 @@ ln -nfs %{srcname}-%{version} %{_javadocdir}/%{srcname}
 %defattr(644,root,root,755)
 %{_javadocdir}/%{srcname}-%{version}
 %ghost %{_javadocdir}/%{srcname}
+
+%files source
+%defattr(644,root,root,755)
+%{_javasrcdir}/%{srcname}.src.jar
