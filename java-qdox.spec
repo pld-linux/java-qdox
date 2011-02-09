@@ -1,4 +1,5 @@
 # TODO:
+# - 1.12 was available but disappeared
 # - tests
 
 %bcond_without	javadoc	# don't build apidocs
@@ -13,6 +14,7 @@ Version:	1.11
 Release:	1
 License:	Apache v2.0
 Group:		Libraries/Java
+#Source0Download: http://qdox.codehaus.org/download.html
 Source0:	http://repository.codehaus.org/com/thoughtworks/qdox/qdox/%{version}/%{srcname}-%{version}-sources.jar
 # Source0-md5:	acb16e9037242322155631a32dba8661
 URL:		http://qdox.codehaus.org/
@@ -34,34 +36,34 @@ JavaDoc @tags. It is designed to be used by active code generators or
 documentation tools.
 
 %description -l pl.UTF-8
-QDox to bardzo szybki i o niewielkim narzucie analizator do wyciągania
-definicji klas/interfejsów/metod z plików źródłowych uzupełnionych
-znacznikami @ JavaDoc. Jest zaprojektowany do używania z aktywnymi
-generatorami kodu i narzędziami do tworzenia dokumentacji.
+QDox to bardzo szybki i mający niewielki narzut analizator do
+wyciągania definicji klas/interfejsów/metod z plików źródłowych
+uzupełnionych znacznikami @ JavaDoc. Jest zaprojektowany do używania z
+aktywnymi generatorami kodu i narzędziami do tworzenia dokumentacji.
 
 %package javadoc
-Summary:	Javadoc for %{srcname}
-Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu %{srcname}
+Summary:	Javadoc for QDox
+Summary(pl.UTF-8):	Dokumentacja javadoc dla pakietu QDox
 Group:		Documentation
 Requires:	jpackage-utils
 Obsoletes:	qdox-javadoc
 
 %description javadoc
-Javadoc for %{srcname}.
+Javadoc for QDox.
 
 %description javadoc -l pl.UTF-8
-Dokumentacja javadoc dla pakietu %{srcname}.
+Dokumentacja javadoc dla pakietu QDox.
 
 %package source
-Summary:	Source code of %{srcname}
-Summary(pl.UTF-8):	Kod źródłowy %{srcname}
+Summary:	Source code of QDox
+Summary(pl.UTF-8):	Kod źródłowy narzędzia QDox
 Group:		Documentation
 
 %description source
-Source code %{srcname}.
+Source code of QDox.
 
 %description source -l pl.UTF-8
-Kod źródłowy %{srcname}.
+Kod źródłowy narzędzia QDox.
 
 %prep
 %setup -qc
@@ -113,7 +115,8 @@ ln -nfs %{srcname}-%{version} %{_javadocdir}/%{srcname}
 
 %files
 %defattr(644,root,root,755)
-%{_javadir}/*.jar
+%{_javadir}/qdox-%{version}.jar
+%{_javadir}/qdox.jar
 
 %files javadoc
 %defattr(644,root,root,755)
