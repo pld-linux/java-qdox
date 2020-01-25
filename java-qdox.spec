@@ -4,7 +4,6 @@
 
 %bcond_without	javadoc	# don't build apidocs
 
-%include	/usr/lib/rpm/macros.java
 
 %define		srcname	qdox
 Summary:	Extract class/interface/method definitions from sources
